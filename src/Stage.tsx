@@ -84,23 +84,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
     }
 
-    writeMessageState(): any {
+    buildMessageState(): any {
         return {stats: this.stats};
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
-            content,            /*** @type: string
-             @description Just the last message about to be sent. ***/
-            anonymizedId,       /*** @type: string
-             @description An anonymized ID that is unique to this individual
-              in this chat, but NOT their Chub ID. ***/
-            isBot             /*** @type: boolean
-             @description Whether this is itself from another bot, ex. in a group chat. ***/
+            content,
+            anonymizedId,
+            isBot
         } = userMessage;
         return {
             stageDirections: null,
-            messageState: {'someKey': this.myInternalState['someKey']},
+            messageState: this.buildMessageState(),
             modifiedMessage: null,
             systemMessage: null,
             error: null,
@@ -110,17 +106,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
-            content,            /*** @type: string
-             @description The LLM's response. ***/
-            anonymizedId,       /*** @type: string
-             @description An anonymized ID that is unique to this individual
-              in this chat, but NOT their Chub ID. ***/
-            isBot             /*** @type: boolean
-             @description Whether this is from a bot, conceivably always true. ***/
+            content,
+            anonymizedId,
+            isBot
         } = botMessage;
         return {
             stageDirections: null,
-            messageState: {'someKey': this.myInternalState['someKey']},
+            messageState: this.buildMessageState(),
             modifiedMessage: null,
             error: null,
             systemMessage: null,
