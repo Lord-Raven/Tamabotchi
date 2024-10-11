@@ -95,7 +95,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } = userMessage;
 
         // First, check that some stats exist; if not, analyze which stats are relevant to this character.
-        if (!this.stats || this.stats.length == 0) {
+        if (!this.stats || Object.keys(this.stats).length == 0) {
             await this.chooseRequiredStats();
         }
 
@@ -118,7 +118,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         } = botMessage;
 
         // First, check that some stats exist; if not, analyze which stats are relevant to this character.
-        if (!this.stats || this.stats.length == 0) {
+        if (!this.stats || Object.keys(this.stats).length == 0) {
             await this.chooseRequiredStats();
         }
 
