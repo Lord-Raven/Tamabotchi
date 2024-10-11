@@ -143,7 +143,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const data = {
             sequence: this.replaceTags(`[CHARACTER DETAILS]\n${this.char.description}\n${this.char.personality}\n${this.char.tavern_personality}\n[/CHARACTER DETAILS]`, {'char': this.char.name, 'user': this.user.name}), 
             candidate_labels: Object.keys(StatNeeded), 
-            hypothesis_template: NEED_HYPOTHESIS, 
+            hypothesis_template: this.replaceTags(NEED_HYPOTHESIS, {'char': this.char.name, 'user': this.user.name}), 
             multi_label: true 
         };
 
@@ -169,7 +169,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const data = {
             sequence: this.replaceTags(content, {'char': this.char.name, 'user': this.user.name}), 
             candidate_labels: Object.values(StatAssessments).filter(label => this.stats[label.stat]).map(label => label.label),
-            hypothesis_template: ASSESSMENT_HYPOTHESIS,
+            hypothesis_template: this.replaceTags(ASSESSMENT_HYPOTHESIS, {'char': this.char.name, 'user': this.user.name}),
             multi_label: true
         };
 
