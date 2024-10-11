@@ -3,6 +3,7 @@ import {StageBase, StageResponse, InitialData, Message, Character, User} from "@
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
+import { ASSESSMENT_HYPOTHESIS, NEED_HYPOTHESIS, Stat, StatAssessments, StatHighIsBad, StatNeeded } from "./Stat";
 
 type MessageStateType = any;
 
@@ -91,9 +92,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
             content,
-            anonymizedId,
-            isBot
         } = userMessage;
+
+        // First, check that some stats exist; if not, analyze which stats are relevant to this character.
+        if (this.stats.length == 0) {
+            await this.chooseRequiredStats();
+        }
+
+        // Look at content to make changes to stats:
+        this.assessStatChanges(content);
+
         return {
             stageDirections: null,
             messageState: this.buildMessageState(),
@@ -107,9 +115,16 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
             content,
-            anonymizedId,
-            isBot
         } = botMessage;
+
+        // First, check that some stats exist; if not, analyze which stats are relevant to this character.
+        if (this.stats.length == 0) {
+            await this.chooseRequiredStats();
+        }
+
+        // Look at content to make changes to stats
+        this.assessStatChanges(content);
+
         return {
             stageDirections: null,
             messageState: this.buildMessageState(),
@@ -118,6 +133,60 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             systemMessage: null,
             chatState: null
         };
+    }
+
+    async chooseRequiredStats() {
+        console.log('Determining appropriate stats for this bot.');
+
+        const data = {
+            sequence: this.replaceTags(`[CHARACTER DETAILS]\n${this.char.description}\n${this.char.personality}\n${this.char.tavern_personality}\n[/CHARACTER DETAILS]`, {'char': this.char.name, 'user': this.user.name}), 
+            candidate_labels: Object.keys(StatNeeded), 
+            hypothesis_template: NEED_HYPOTHESIS, 
+            multi_label: true 
+        };
+
+        const result = await this.query(data);
+
+        const MAX_STATS = 6;
+        const STAT_THRESHOLD = 0.3;
+
+        let index = 0;
+        while (index < result.scores.length && this.stats.length < MAX_STATS) {
+
+            if (result.scores[index] > STAT_THRESHOLD) {
+                const stat = StatNeeded[result.labels[index]] as Stat;
+                this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
+            }
+            index++;
+        }
+    }
+
+    async assessStatChanges(content: string) {
+        console.log('Determining stat changes for provided content');
+
+        const data = {
+            sequence: this.replaceTags(content, {'char': this.char.name, 'user': this.user.name}), 
+            candidate_labels: Object.values(StatAssessments).filter(label => this.stats[label.stat]).map(label => label.label),
+            hypothesis_template: ASSESSMENT_HYPOTHESIS,
+            multi_label: true
+        };
+
+        const result = await this.query(data);
+
+        const MAX_STATS = 4;
+        const STAT_THRESHOLD = 0.3;
+
+        let index = 0;
+        while (index < result.scores.length && this.stats.length < MAX_STATS) {
+
+            if (result.scores[index] > STAT_THRESHOLD) {
+                const label = Object.values(StatAssessments).filter(label => label.label = result.labels[index])[0];
+                if (this.stats[label.stat]) {
+                    this.stats[label.stat] = Math.max(0, Math.min(10, this.stats[label.stat] + label.modifier));
+                }
+            }
+            index++;
+        }
     }
 
     replaceTags(source: string, replacements: {[name: string]: string}) {
