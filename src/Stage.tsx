@@ -3,7 +3,7 @@ import {StageBase, StageResponse, InitialData, Message, Character, User} from "@
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
-import { ASSESSMENT_HYPOTHESIS, NEED_HYPOTHESIS, Stat, StatAssessments, StatHighIsBad, StatNeeded } from "./Stat";
+import { ASSESSMENT_HYPOTHESIS, NEED_HYPOTHESIS, Stat, StatAssessments, StatHighIsBad, StatNeeded, StatOpposites } from "./Stat";
 
 type MessageStateType = any;
 
@@ -150,14 +150,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const result = await this.query(data);
 
         const MAX_STATS = 6;
-        const STAT_THRESHOLD = 0.3;
+        const STAT_THRESHOLD = 0.01;
 
         let index = 0;
+        let bannedStats: Stat[] = [];
         while (index < result.scores.length && this.stats.length < MAX_STATS) {
-
             if (result.scores[index] > STAT_THRESHOLD) {
-                const stat = StatNeeded[result.labels[index]] as Stat;
-                this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
+                StatNeeded[result.labels[index]].forEach(stat => {
+                    if (!bannedStats.includes(stat)) {
+                        this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
+                        if (Object.keys(StatOpposites).includes(stat)) {
+                            bannedStats.push(...StatOpposites[stat]);
+                        }
+                    }
+                });
             }
             index++;
         }
