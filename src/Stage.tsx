@@ -1,9 +1,18 @@
-import {ReactElement} from "react";
+import {ReactElement, useEffect, useState} from "react";
 import {StageBase, StageResponse, InitialData, Message, Character, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
-import { ASSESSMENT_HYPOTHESIS, NEED_HYPOTHESIS, Stat, StatAssessments, StatHighIsBad, StatNeeded, StatOpposites } from "./Stat";
+import {
+    ASSESSMENT_HYPOTHESIS,
+    NEED_HYPOTHESIS,
+    Stat,
+    StatAssessments,
+    StatHighIsBad,
+    StatNeeded,
+    StatOpposites,
+    StatPerTurn, StatPrompts
+} from "./Stat";
 
 type MessageStateType = any;
 
@@ -12,6 +21,13 @@ type ConfigType = any;
 type InitStateType = any;
 
 type ChatStateType = any;
+
+const [animationFrame, setAnimationFrame] = useState(0);
+useEffect(() => {
+    const interval = setInterval(() => {
+        setAnimationFrame((animationFrame + 1) % 2);
+    }, 1000);
+});
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
@@ -100,10 +116,21 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         // Look at content to make changes to stats:
-        this.assessStatChanges(content);
+        await this.assessStatChanges(content);
+
+        let stageDirection = '';
+        // Build stage directions
+        for (let stat in this.stats) {
+            for (let prompt of StatPrompts[stat as Stat]) {
+                if ((StatHighIsBad ? (20 - this.stats[stat])  : this.stats[stat]) <= prompt.threshold) {
+                    stageDirection = `${stageDirection}\n${prompt.prompt}`;
+                    break;
+                }
+            }
+        }
 
         return {
-            stageDirections: null,
+            stageDirections: stageDirection,
             messageState: this.buildMessageState(),
             modifiedMessage: null,
             systemMessage: null,
@@ -122,8 +149,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             await this.chooseRequiredStats();
         }
 
+        for (let stat in this.stats) {
+            this.stats[stat] = Math.max(0, Math.min(20, this.stats[stat] + StatPerTurn[stat as Stat]));
+        }
+
         // Look at content to make changes to stats
-        this.assessStatChanges(content);
+        await this.assessStatChanges(content);
 
         return {
             stageDirections: null,
@@ -190,7 +221,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             if (result.scores[index] > STAT_THRESHOLD) {
                 const label = Object.values(StatAssessments).filter(label => label.label = result.labels[index])[0];
                 if (this.stats[label.stat]) {
-                    this.stats[label.stat] = Math.max(0, Math.min(10, this.stats[label.stat] + label.modifier));
+                    this.stats[label.stat] = Math.max(0, Math.min(20, this.stats[label.stat] + label.modifier));
                 }
             }
             index++;
@@ -234,6 +265,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             display: 'grid',
             alignItems: 'stretch'
         }}>
+            <div style={{position: 'relative', width: '500px', height: '500px' }}>
+                <img src="/tamabotchi.png" alt="Tamagotchi-style hand-held electronic game"/>
+                <div style={{position: 'absolute'}}>
+                    <img src="/tamabotchi-sprites.png" style={{top: '45%', left: '45%', width: '10%', height: '10%', clip: 'rect(0, 16, 16, 0)', transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}} alt="Character Image" />
+                </div>
+            </div>
         </div>;
     }
 
