@@ -23,11 +23,13 @@ type InitStateType = any;
 type ChatStateType = any;
 
 const Animation: React.FC = () => {
-    const [animationFrame, setAnimationFrame] = useState(0);
+    const [animationFrame, setAnimationFrame] = useState<number>(0);
     useEffect(() => {
         const interval = setInterval(() => {
-            setAnimationFrame((animationFrame + 1) % 2);
+            setAnimationFrame(animationFrame => (animationFrame + 1) % 2);
         }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return <img src={'/tamabotchi-sprites.png'} style={{
