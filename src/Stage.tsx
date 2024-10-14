@@ -22,13 +22,6 @@ type InitStateType = any;
 
 type ChatStateType = any;
 
-const [animationFrame, setAnimationFrame] = useState(0);
-useEffect(() => {
-    const interval = setInterval(() => {
-        setAnimationFrame((animationFrame + 1) % 2);
-    }, 1000);
-});
-
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     
@@ -259,6 +252,14 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
+
+        const [animationFrame, setAnimationFrame] = useState(0);
+        useEffect(() => {
+            const interval = setInterval(() => {
+                setAnimationFrame((animationFrame + 1) % 2);
+            }, 1000);
+        });
+
         return <div style={{
             width: '100vw',
             height: '100vh',
