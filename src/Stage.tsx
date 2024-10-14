@@ -266,9 +266,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             alignItems: 'stretch'
         }}>
             <div style={{position: 'relative', width: '500px', height: '500px' }}>
-                <img src="/tamabotchi.png" alt="Tamagotchi-style hand-held electronic game"/>
+                <img src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
                 <div style={{position: 'absolute'}}>
-                    <img src="/tamabotchi-sprites.png" style={{top: '45%', left: '45%', width: '10%', height: '10%', clip: 'rect(0, 16, 16, 0)', transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}} alt="Character Image" />
+                    <img src={'/tamabotchi-sprites.png'} style={{top: '45%', left: '45%', width: '10%', height: '10%', clip: 'rect(0, 16, 16, 0)', transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}} alt="Character Image" />
                 </div>
             </div>
         </div>;
