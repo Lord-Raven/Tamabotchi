@@ -37,7 +37,6 @@ const Animation: React.FC = () => {
         left: '45%',
         width: '10%',
         height: '10%',
-        clip: 'rect(0, 16, 16, 0);',
         position: 'absolute',
     }} alt="Character Image"/>;
 };
