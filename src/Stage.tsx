@@ -1,4 +1,4 @@
-import {ReactElement, useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import {StageBase, StageResponse, InitialData, Message, Character, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
@@ -22,9 +22,27 @@ type InitStateType = any;
 
 type ChatStateType = any;
 
+const Animation: React.FC = () => {
+    const [animationFrame, setAnimationFrame] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setAnimationFrame((animationFrame + 1) % 2);
+        }, 1000);
+    }, []);
+
+    return <img src={'/tamabotchi-sprites.png'} style={{
+        top: '45%',
+        left: '45%',
+        width: '10%',
+        height: '10%',
+        clip: 'rect(0, 16, 16, 0)',
+        transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
+    }} alt="Character Image"/>;
+};
+
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
-    
+
     client: any;
     fallbackPipelinePromise: Promise<any> | null = null;
     fallbackPipeline: any = null;
@@ -253,12 +271,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     render(): ReactElement {
 
-        const [animationFrame, setAnimationFrame] = useState(0);
-        useEffect(() => {
-            const interval = setInterval(() => {
-                setAnimationFrame((animationFrame + 1) % 2);
-            }, 1000);
-        });
+
 
         return <div style={{
             width: '100vw',
@@ -269,7 +282,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             <div style={{position: 'relative', width: '500px', height: '500px' }}>
                 <img src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
                 <div style={{position: 'absolute'}}>
-                    <img src={'/tamabotchi-sprites.png'} style={{top: '45%', left: '45%', width: '10%', height: '10%', clip: 'rect(0, 16, 16, 0)', transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}} alt="Character Image" />
+                    <Animation/>
                 </div>
             </div>
         </div>;
