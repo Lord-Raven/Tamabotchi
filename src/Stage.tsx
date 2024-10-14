@@ -38,7 +38,7 @@ const Animation: React.FC = () => {
         width: '10%',
         height: '10%',
         clip: 'rect(0, 16, 16, 0)',
-        transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
+        position: 'absolute',
     }} alt="Character Image"/>;
 };
 
@@ -282,7 +282,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             alignItems: 'stretch'
         }}>
             <div style={{position: 'relative', width: '500px', height: '500px' }}>
-                <img src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
+                <img style={{position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%'}} src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
                 <div style={{position: 'absolute'}}>
                     <Animation/>
                 </div>
