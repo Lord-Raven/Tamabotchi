@@ -14,9 +14,17 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         return () => clearInterval(interval);
     }, []);
 
+    const spriteStyle = {
+        position: 'absolute' as 'absolute',
+        backgroundImage: 'url(/tamabotchi-sprites.png)',
+        backgroundSize: '1600% 1600%',
+        zIndex: '4'
+    }
+
     const healthDivs = [];
     for (let i = 0; i < messageState.health ?? 3; i++) {
         healthDivs.push(<div className='sprite' style={{
+            ...spriteStyle,
             top: '40%',
             left: `${35 + i * 5}%`,
             width: '5%',
@@ -29,16 +37,9 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
-        <style>{`
-                .sprite {
-                    position: 'absolute',
-                    backgroundImage: 'url(/tamabotchi-sprites.png)',
-                    backgroundSize: '1600% 1600%',
-                    zIndex: '4'
-                }
-            `}</style>
         {healthDivs}
-        <div className='sprite' style={{
+        <div style={{
+            ...spriteStyle,
             top: '47%',
             left: '45%',
             width: '10%',
