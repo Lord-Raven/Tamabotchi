@@ -3,6 +3,7 @@ import {StageBase, StageResponse, InitialData, Message, Character, User} from "@
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
+import {Display} from "./Display";
 
 import {
     ASSESSMENT_HYPOTHESIS,
@@ -23,42 +24,6 @@ type InitStateType = any;
 
 type ChatStateType = any;
 
-const Animation: React.FC = () => {
-    const [animationFrame, setAnimationFrame] = useState<number>(0);
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setAnimationFrame(animationFrame => (animationFrame + 1) % 2);
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    /*               <div style="width: 100%; height: 100%; background-image: url(&quot;https://imgur.com/HrYnS3B.png&quot;); background-size: 800% 800%; background-position: 0% 0%;"></div>
-
-                <img src={'/tamabotchi-sprites2.png'} style={{
-                top: '0',
-                left: '0',
-                position: 'absolute',
-                clipPath: 'rect(0px 16px 16px 0px);',
-                zIndex: '5',
-                transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
-                }} alt="Character Image"/>
-     */
-    return <div style={{
-            top: '45%',
-            left: '45%',
-            width: '10%',
-            height: '10%',
-            zIndex: '4',
-            position: 'absolute',
-            backgroundColor: '#555555',
-            backgroundImage: `url(/tamabotchi-sprites.png)`,
-            backgroundSize: '1600% 1600%',
-            backgroundPosition: '0% 0%',
-            imageRendering: 'pixelated',
-            transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}}>
-        </div>;
-};
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
@@ -71,6 +36,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     // MessageState variables:
     stats: {[key: string]: number} = {};
+    health: number = 3;
 
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
@@ -128,11 +94,12 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     readMessageState(messageState: any) {
         if (messageState) {
             this.stats = messageState.stats ?? {};
+            this.health = messageState.health ?? 3;
         }
     }
 
     buildMessageState(): any {
-        return {stats: this.stats};
+        return {stats: this.stats, health: this.health};
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
@@ -219,6 +186,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             if (result.scores[index] > STAT_THRESHOLD) {
                 StatNeeded[result.labels[index]].forEach(stat => {
                     if (!bannedStats.includes(stat)) {
+                        console.log(`Adding stat: ${stat}.`);
                         this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
                         if (Object.keys(StatOpposites).includes(stat)) {
                             bannedStats.push(...StatOpposites[stat]);
@@ -228,6 +196,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
             index++;
         }
+        console.log('Finished building stats:');
+        console.log(this.stats);
     }
 
     async assessStatChanges(content: string) {
@@ -239,6 +209,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             hypothesis_template: this.replaceTags(ASSESSMENT_HYPOTHESIS, {'char': this.char.name, 'user': this.user.name}),
             multi_label: true
         };
+
+        console.log(data);
+        console.log(this.stats);
 
         const result = await this.query(data);
 
@@ -289,18 +262,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
-
-
-
-        return <div style={{
-            width: '100vw',
-            height: '100vh'
-        }}>
-            <div style={{position: 'relative', width: '100vw', height: '100vw' }}>
+        return <div style={{position: 'relative', width: '100vw', height: '100vw' }}>
                 <img style={{position: 'absolute', top: '0%', left: '0%', width: '100%', height: '100%', zIndex: '1'}} src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
-                <Animation/>
-            </div>
-        </div>;
+                <Display messageState = {this.buildMessageState()}/>
+            </div>;
     }
 
 }
