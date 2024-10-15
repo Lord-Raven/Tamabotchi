@@ -25,7 +25,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
             backgroundSize: '3200% 3200%'
 
         }}>
-        </div>)
+        </div>);
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
@@ -38,7 +38,11 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
                 }
             `}</style>
         {healthDivs}
-        <div className='sprite' style={{
+        <div style={{
+            position: 'absolute',
+            backgroundImage: 'url(/tamabotchi-sprites.png)',
+            backgroundSize: '1600% 1600%',
+            zIndex: '4',
             top: '47%',
             left: '45%',
             width: '10%',
