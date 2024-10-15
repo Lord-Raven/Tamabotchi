@@ -52,9 +52,10 @@ const Animation: React.FC = () => {
             zIndex: '4',
             position: 'absolute',
             backgroundColor: '#555555',
-            backgroundImage: `url(/tamabotchi-sprites2.png)`,
+            backgroundImage: `url(/tamabotchi-sprites.png)`,
             backgroundSize: '1600% 1600%',
             backgroundPosition: '0% 0%',
+            imageRendering: 'pixelated',
             transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}}>
         </div>;
 };
