@@ -33,7 +33,7 @@ const Animation: React.FC = () => {
     }, []);
 
     return <div style={{top: '45%', left: '45%', width: '10%', height: '10%', zIndex: '4', position: 'absolute'}}>
-            <img src={'/tamabotchi-sprites.png'} style={{
+            <img src={'/tamabotchi-sprites2.png'} style={{
                 top: '0',
                 left: '0',
                 position: 'absolute',
