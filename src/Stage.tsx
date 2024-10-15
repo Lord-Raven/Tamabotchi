@@ -38,9 +38,10 @@ const Animation: React.FC = () => {
                 left: '0%',
                 width: '100%',
                 height: '100%',
-                clip: 'rect(0px, 16px, 16px, 0px);',
+                clipPath: 'rect(0px 16px 16px 0px);',
                 position: 'absolute',
-                zIndex: '5'
+                zIndex: '5',
+                transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
                 }} alt="Character Image"/>
         </div>;
 };
