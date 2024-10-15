@@ -294,12 +294,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         return <div style={{
             width: '100vw',
-            height: '100vh',
-            display: 'grid',
-            alignItems: 'stretch'
+            height: '100vh'
         }}>
             <div style={{position: 'relative', width: '100vw', height: '100vw' }}>
-                <img style={{position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%', zIndex: '1'}} src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
+                <img style={{position: 'absolute', top: '0%', left: '0%', width: '100%', height: '100%', zIndex: '1'}} src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
                 <Animation/>
             </div>
         </div>;
