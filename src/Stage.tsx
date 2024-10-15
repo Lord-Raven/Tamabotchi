@@ -34,10 +34,10 @@ const Animation: React.FC = () => {
 
     return <div style={{top: '45%', left: '45%', width: '10%', height: '10%', zIndex: '4', position: 'absolute'}}>
             <img src={'/tamabotchi-sprites.png'} style={{
-                top: '0px',
-                left: '0px',
-                width: '32px',
-                height: '32px',
+                top: '0%',
+                left: '0%',
+                width: '100%',
+                height: '100%',
                 clip: 'rect(0px, 16px, 16px, 0px);',
                 position: 'absolute',
                 zIndex: '5',
