@@ -45,10 +45,10 @@ const Animation: React.FC = () => {
                 }} alt="Character Image"/>
      */
     return <div style={{
-            top: '40%',
-            left: '40%',
-            width: '20%',
-            height: '20%',
+            top: '45%',
+            left: '45%',
+            width: '10%',
+            height: '10%',
             zIndex: '4',
             position: 'absolute',
             backgroundColor: '#555555',
