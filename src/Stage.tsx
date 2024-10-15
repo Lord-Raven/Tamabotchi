@@ -38,7 +38,7 @@ const Animation: React.FC = () => {
                 left: '0px',
                 width: '16px',
                 height: '16px',
-                clip: 'rect(0px, 16px, 16px, 0px)',
+                clip: 'rect(0px, 16px, 16px, 0px);',
                 position: 'absolute',
                 zIndex: '5',
                 transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
