@@ -50,8 +50,9 @@ const Animation: React.FC = () => {
             height: '20%',
             zIndex: '4',
             position: 'absolute',
+            backgroundColor: '#555555',
             backgroundImage: '/tamabotchi-sprites2.png',
-            backgroundSize: '1600% 1600%',
+            backgroundSize: '100% 100%',
             backgroundPosition: '0% 0%',
             transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}}>
         </div>;
