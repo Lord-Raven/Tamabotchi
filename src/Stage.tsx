@@ -40,8 +40,7 @@ const Animation: React.FC = () => {
                 height: '100%',
                 clip: 'rect(0px, 16px, 16px, 0px);',
                 position: 'absolute',
-                zIndex: '5',
-                transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
+                zIndex: '5'
                 }} alt="Character Image"/>
         </div>;
 };
