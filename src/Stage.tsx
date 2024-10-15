@@ -36,8 +36,8 @@ const Animation: React.FC = () => {
             <img src={'/tamabotchi-sprites.png'} style={{
                 top: '0px',
                 left: '0px',
-                width: '16px',
-                height: '16px',
+                width: '32px',
+                height: '32px',
                 clip: 'rect(0px, 16px, 16px, 0px);',
                 position: 'absolute',
                 zIndex: '5',
