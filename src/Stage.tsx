@@ -39,13 +39,12 @@ const Animation: React.FC = () => {
                 position: 'absolute',
                 clipPath: 'rect(0px 16px 16px 0px);',
                 zIndex: '5',
-                //transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
+                transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
                 }} alt="Character Image"/>
         </div>;
 };
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
-
 
     client: any;
     fallbackPipelinePromise: Promise<any> | null = null;
