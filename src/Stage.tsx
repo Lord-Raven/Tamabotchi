@@ -35,9 +35,10 @@ const Animation: React.FC = () => {
     return <img src={'/tamabotchi-sprites.png'} style={{
         top: '45%',
         left: '45%',
-        width: '100%',
-        height: '100%',
+        width: '10%',
+        height: '10%',
         position: 'absolute',
+        zIndex: 100
     }} alt="Character Image"/>;
 };
 
