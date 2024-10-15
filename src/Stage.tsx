@@ -4,8 +4,6 @@ import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
 import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
 
-import spritePath from '/tamabotchi-sprites.png'
-
 import {
     ASSESSMENT_HYPOTHESIS,
     NEED_HYPOTHESIS,
@@ -55,7 +53,7 @@ const Animation: React.FC = () => {
             position: 'absolute',
             backgroundColor: '#555555',
             backgroundImage: `url(/tamabotchi-sprites2.png)`,
-            backgroundSize: '100% 100%',
+            backgroundSize: '1600% 1600%',
             backgroundPosition: '0% 0%',
             transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}}>
         </div>;
