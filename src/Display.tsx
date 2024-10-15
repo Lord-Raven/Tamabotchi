@@ -30,7 +30,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
 
     return <div style={{imageRendering: 'pixelated'}}>
         <style>{`
-                sprite {
+                .sprite {
                     position: 'absolute',
                     backgroundImage: 'url(/tamabotchi-sprites.png)',
                     backgroundSize: '1600% 1600%',
