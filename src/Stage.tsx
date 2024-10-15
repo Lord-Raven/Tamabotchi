@@ -32,7 +32,7 @@ const Animation: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return <div style={{top: '45%', left: '45%', width: '10%', height: '10%', zIndex: '4', position: 'absolute'}}>
+    return <div style={{top: '40%', left: '40%', width: '20%', height: '20%', zIndex: '4', position: 'absolute'}}>
             <img src={'/tamabotchi-sprites2.png'} style={{
                 top: '0',
                 left: '0',
