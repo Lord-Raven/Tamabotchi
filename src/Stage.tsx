@@ -32,8 +32,9 @@ const Animation: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return <div style={{top: '40%', left: '40%', width: '20%', height: '20%', zIndex: '4', position: 'absolute'}}>
-            <img src={'/tamabotchi-sprites2.png'} style={{
+    /*               <div style="width: 100%; height: 100%; background-image: url(&quot;https://imgur.com/HrYnS3B.png&quot;); background-size: 800% 800%; background-position: 0% 0%;"></div>
+
+                <img src={'/tamabotchi-sprites2.png'} style={{
                 top: '0',
                 left: '0',
                 position: 'absolute',
@@ -41,6 +42,18 @@ const Animation: React.FC = () => {
                 zIndex: '5',
                 transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
                 }} alt="Character Image"/>
+     */
+    return <div style={{
+            top: '40%',
+            left: '40%',
+            width: '20%',
+            height: '20%',
+            zIndex: '4',
+            position: 'absolute',
+            backgroundImage: '/tamabotchi-sprites2.png',
+            backgroundSize: '1600% 1600%',
+            backgroundPosition: '0% 0%',
+            transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'}}>
         </div>;
 };
 
