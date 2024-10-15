@@ -182,7 +182,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         let index = 0;
         let bannedStats: Stat[] = [];
-        while (index < result.scores.length && this.stats.length < MAX_STATS) {
+        while (index < result.scores.length && Object.keys(this.stats).length < MAX_STATS) {
             console.log(`Considering: ${result.scores[index]}`);
             if (result.scores[index] > STAT_THRESHOLD) {
                 console.log('Met threshold');
