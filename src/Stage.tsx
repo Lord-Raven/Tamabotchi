@@ -32,16 +32,16 @@ const Animation: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return <img src={'/tamabotchi-sprites.png'} style={{
-        top: '45%',
-        left: '45%',
-        width: '100%',
-        height: '100%',
-        clip: 'rect(0px, 16px, 16px, 0px)',
-        position: 'absolute',
-        zIndex: '5',
-        transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
-    }} alt="Character Image"/>;
+    return <div style={{top: '45%', left: '45%', width: '10%', height: '10%', zIndex: '4', position: 'absolute'}}>
+            <img src={'/tamabotchi-sprites.png'} style={{
+                width: '100%',
+                height: '100%',
+                clip: 'rect(0px, 16px, 16px, 0px)',
+                position: 'relative',
+                zIndex: '5',
+                transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
+                }} alt="Character Image"/>
+        </div>;
 };
 
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
