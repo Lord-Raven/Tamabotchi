@@ -23,13 +23,13 @@ export enum Stat {
 export const NEED_HYPOTHESIS = 'Judging by these character details, it seems that {{char}} {}.';
 
 export const StatNeeded: {[key: string]: Stat[]} = {
-    'is a living creature who must eat, sleep, groom, and go to the bathroom': [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
+    'is a living creature who must eat, sleep, etc.': [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
     'is a robot or construct who requires power and maintenance': [Stat.Power, Stat.Maintenance],
-    'is an undead who requires flesh, blood, or brains for sustenance': [Stat.Bloodlust],
+    'is an undead monster who requires flesh, blood, or brains for sustenance': [Stat.Bloodlust],
     'is a demon, necromancer, warlock, or witch who might steal souls': [Stat.Souls],
-    'is filled with self-doubt': [Stat.SelfLoathing],
+    'is plagued by self-doubt': [Stat.SelfLoathing],
     'craves praise or ego-stroking': [Stat.Praise],
-    'stylizes and keeps up with the latest fashions': [Stat.Style],
+    'styles or enjoys fashion': [Stat.Style],
     'loves working out and staying fit': [Stat.Gains],
     'is an extrovert who loves socializing': [Stat.Social],
     'is an introvert who avoids socializing': [Stat.SocialBattery],
