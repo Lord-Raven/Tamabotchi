@@ -29,7 +29,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
             left: `${35 + i * 5}%`,
             width: '5%',
             height: '5%',
-            backgroundPosition: `${(animationFrame == 0 && i == messageState.health - 1) ? '6.2745098' : '3.1372549'}% 69.0196078%`,
+            backgroundPosition: `${(animationFrame == 0 && i == messageState.health - 1) ? '16' : '8'}px 176px`,
             backgroundSize: '3200% 3200%'
 
         }}>
