@@ -15,7 +15,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     }, []);
 
     function getPercent(imageSize: number, pixelCount: number): number {
-      return  (256 - imageSize) / 100 * pixelCount;
+      return  100 / (256 - imageSize) * pixelCount;
     }
 
 
