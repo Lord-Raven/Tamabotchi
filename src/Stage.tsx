@@ -6,8 +6,8 @@ import {Client} from "@gradio/client";
 import {Display} from "./Display";
 
 import {
-    ASSESSMENT_HYPOTHESIS,
-    NEED_HYPOTHESIS,
+    ASSESSMENT_HYPOTHESIS, MASCULINE_LABEL,
+    NEED_HYPOTHESIS, SpriteMap,
     Stat,
     StatAssessments,
     StatHighIsBad,
@@ -37,6 +37,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     // MessageState variables:
     stats: {[key: string]: number} = {};
     health: number = 3;
+    masculine: boolean = false;
+    characterType: number = 0;
 
 
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
@@ -180,15 +182,22 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         const MAX_STATS = 6;
         const STAT_THRESHOLD = 0.01;
 
+        this.characterType = 1;
+
         let index = 0;
         let bannedStats: Stat[] = [];
         while (index < result.scores.length && Object.keys(this.stats).length < MAX_STATS) {
             console.log(`Considering: ${result.scores[index]}`);
             if (result.scores[index] > STAT_THRESHOLD) {
                 console.log('Met threshold');
+                if (result.scores[index] > 0.5 && result.labels[index] == MASCULINE_LABEL) {
+                    this.masculine = true;
+                } else if (SpriteMap[result.labels[index]]) {
+                    this.characterType = SpriteMap[result.labels[index]];
+                }
                 StatNeeded[result.labels[index]].forEach(stat => {
                     console.log('Found stat in StatNeeded:' + stat);
-                    if (!bannedStats.includes(stat)) {
+                    if (!bannedStats.includes(stat) && !this.stats[stat]) {
                         console.log(`Adding stat: ${stat}.`);
                         this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
                         if (Object.keys(StatOpposites).includes(stat)) {

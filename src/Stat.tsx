@@ -22,11 +22,27 @@ export enum Stat {
 
 export const NEED_HYPOTHESIS = 'Judging by these character details, it seems that {{char}} {}.';
 
+export const MASCULINE_LABEL = 'is overtly masculine';
+export const ELF_LABEL = 'is an elf who must eat and bathe and stuff';
+export const FURRY_LABEL = 'is an animal or furry character who must eat and bathe and stuff';
+export const VAMPIRE_LABEL = 'is a vampire, orc, or troll who has pronounced fangs or tusks';
+export const DEMON_LABEL = 'is a demon';
+
+export const SpriteMap: {[key: string]: number} = {
+    ELF_LABEL: 2,
+    FURRY_LABEL: 3,
+    DEMON_LABEL: 4
+}
+
 export const StatNeeded: {[key: string]: Stat[]} = {
-    'is a living creature who must eat, sleep, etc.': [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
+    MASCULINE_LABEL: [],
+    ELF_LABEL: [Stat.Hunger, Stat.Bladder, Stat.Hygiene],
+    FURRY_LABEL: [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
+    'is a mortal creature who must eat, sleep, etc.': [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
     'is a robot or construct who requires power and maintenance': [Stat.Power, Stat.Maintenance],
     'is an undead monster who requires flesh, blood, or brains for sustenance': [Stat.Bloodlust],
-    'is a demon, necromancer, warlock, or witch who might steal souls': [Stat.Souls],
+    DEMON_LABEL: [Stat.Souls],
+    'is a necromancer, warlock, or witch who might steal souls': [Stat.Souls],
     'is plagued by self-doubt': [Stat.SelfLoathing],
     'craves praise or ego-stroking': [Stat.Praise],
     'styles or enjoys fashion': [Stat.Style],

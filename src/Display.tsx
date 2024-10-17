@@ -14,6 +14,11 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         return () => clearInterval(interval);
     }, []);
 
+    function getPercent(imageSize: number, pixelCount: number): number {
+      return  (256 - imageSize) / 100 * pixelCount;
+    }
+
+
     const spriteStyle = {
         position: 'absolute' as 'absolute',
         backgroundImage: 'url(/tamabotchi-sprites.png)',
@@ -21,32 +26,26 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         zIndex: '4'
     }
 
+    function buildImage(positionX: number, positionY: number, width: number, height: number, textureX: number, textureY: number, flipX: boolean): any {
+        return <div style={{
+            ...spriteStyle,
+            top: `${70 - (positionY * 0.625)}%`,
+            left: `${35 + (positionX * 0.625)}%`,
+            width: `${width * 0.625}%`,
+            height: `${height * 0.625}%`,
+            backgroundPosition: `${getPercent(width, textureX)}% ${getPercent(height, textureY)}%`,
+            backgroundSize: `${25600 / width}% ${25600 / height}%`,
+            transform: flipX ? 'scaleX(-1)' : 'scaleX(1)'
+        }}></div>
+    }
+
     const healthDivs = [];
     for (let i = 0; i < messageState.health ?? 3; i++) {
-        healthDivs.push(<div className='sprite' style={{
-            ...spriteStyle,
-            top: '40%',
-            left: `${35 + i * 5}%`,
-            width: '5%',
-            height: '5%',
-            backgroundPosition: `${(animationFrame == 0 && i == messageState.health - 1) ? '6.451613' : '3.2258065'}% 70.9677419%`,
-            backgroundSize: '3200% 3200%'
-
-        }}>
-        </div>);
+        healthDivs.push(buildImage(i * 8, 48 - 8, 8, 8, (animationFrame == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
         {healthDivs}
-        <div style={{
-            ...spriteStyle,
-            top: '47%',
-            left: '45%',
-            width: '10%',
-            height: '10%',
-            backgroundPosition: '0% 0%',
-            transform: (animationFrame == 0) ? 'scaleX(1)' : 'scaleX(-1)'
-        }}>
-        </div>
+        {buildImage(16, 16, 16, 16, 0, 16, animationFrame == 0)}
     </div>;
 };
