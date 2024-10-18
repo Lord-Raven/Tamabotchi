@@ -50,14 +50,17 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     let badStats: Stat[] = [];
     let frame = 0;
     for (let stat in Object.keys(messageState.stats)) {
+            console.log(stat);
         //if ((StatHighIsBad[stat as Stat] ? (20 - messageState.stats[stat]) : messageState.stats[stat]) < 3) {
             badStats.push(stat as Stat);
         //}
     }
+    console.log(badStats);
 
     if (badStats.length > 0) {
         const stat = badStats[animationFrame % badStats.length];
-        const statIndex = Number(`${stat}`);
+        const statIndex = Object.values(Stat).indexOf(stat);
+        console.log(`${stat}:${statIndex}`);
         images.push(buildImage(0, 8, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
     }
 
