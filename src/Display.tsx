@@ -59,11 +59,12 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     if (badStats.length > 0) {
         const stat = badStats[animationFrame % badStats.length];
         const statIndex = Object.values(Stat).indexOf(stat);
-        images.push(buildImage(0, HEIGHT - 16, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
+        console.log(`${stat}:${statIndex}`);
+        images.push(buildImage(0, 8, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
         {images}
-        {buildImage(16, 0, 16, 16, (messageState.masculine ? 128 : 0) + frame * 16, messageState.characterType * 16, (animationFrame % 2) == 0)}
+        {buildImage(16, 16, 16, 16, (messageState.masculine ? 128 : 0) + frame * 16, messageState.characterType * 16, (animationFrame % 2) == 0)}
     </div>;
 };
