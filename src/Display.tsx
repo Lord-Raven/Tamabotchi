@@ -5,6 +5,9 @@ interface DisplayProps {
 }
 
 export const Display: React.FC<DisplayProps> = ({messageState}) => {
+
+    const HEIGHT = 42;
+    const WIDTH = 48;
     const [animationFrame, setAnimationFrame] = useState<number>(0);
     useEffect(() => {
         const interval = setInterval(() => {
@@ -41,11 +44,11 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
 
     const healthDivs = [];
     for (let i = 0; i < messageState.health ?? 3; i++) {
-        healthDivs.push(buildImage(i * 8, 48 - 8, 8, 8, (animationFrame == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
+        healthDivs.push(buildImage(i * 8, HEIGHT - 8, 8, 8, (animationFrame == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
         {healthDivs}
-        {buildImage(16, 16, 16, 16, 0, 16, animationFrame == 0)}
+        {buildImage(16, 0, 16, 16, 0, 16, animationFrame == 0)}
     </div>;
 };
