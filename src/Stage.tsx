@@ -128,6 +128,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             }
         }
 
+        console.log(stageDirection);
+
         return {
             stageDirections: stageDirection,
             messageState: this.buildMessageState(),

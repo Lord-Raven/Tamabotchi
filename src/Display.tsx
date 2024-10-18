@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {Stat, StatHighIsBad} from "./Stat";
 
 interface DisplayProps {
     messageState: any
@@ -11,7 +12,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     const [animationFrame, setAnimationFrame] = useState<number>(0);
     useEffect(() => {
         const interval = setInterval(() => {
-            setAnimationFrame(animationFrame => (animationFrame + 1) % 2);
+            setAnimationFrame(animationFrame => (animationFrame + 1) % 1000);
         }, 1000);
 
         return () => clearInterval(interval);
@@ -42,13 +43,27 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         }}></div>
     }
 
-    const healthDivs = [];
+    const images = [];
     for (let i = 0; i < messageState.health ?? 3; i++) {
-        healthDivs.push(buildImage(i * 8, HEIGHT - 8, 8, 8, (animationFrame == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
+        images.push(buildImage(i * 8, HEIGHT - 8, 8, 8, ((animationFrame % 2) == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
+    }
+
+    let badStats: Stat[] = [];
+    let frame = 0;
+    for (let stat in Object.keys(messageState.stats)) {
+        //if ((StatHighIsBad[stat as Stat] ? (20 - messageState.stats[stat]) : messageState.stats[stat]) < 3) {
+            badStats.push(stat as Stat);
+        //}
+    }
+
+    if (badStats.length > 0) {
+        const stat = badStats[animationFrame % badStats.length];
+        const statIndex = Object.values(Stat).indexOf(stat);
+        images.push(buildImage(0, HEIGHT - 16, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
     }
 
     return <div style={{imageRendering: 'pixelated'}}>
-        {healthDivs}
-        {buildImage(16, 0, 16, 16, 0, 16, animationFrame == 0)}
+        {images}
+        {buildImage(16, 0, 16, 16, (messageState.masculine ? 128 : 0) + frame * 16, messageState.characterType * 16, (animationFrame % 2) == 0)}
     </div>;
 };
