@@ -26,7 +26,6 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     const spriteStyle = {
         position: 'absolute' as 'absolute',
         backgroundImage: 'url(/tamabotchi-sprites.png)',
-        backgroundSize: '1600% 1600%',
         zIndex: '4'
     }
 
@@ -58,8 +57,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
 
     if (badStats.length > 0) {
         const stat = badStats[animationFrame % badStats.length];
-        const statIndex = Object.values(Stat).indexOf(stat);
-        console.log(`${stat}:${statIndex}`);
+        const statIndex = Number(`${stat}`);
         images.push(buildImage(0, 8, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
     }
 
