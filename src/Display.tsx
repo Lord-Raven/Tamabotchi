@@ -29,7 +29,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     function buildImage(positionX: number, positionY: number, width: number, height: number, textureX: number, textureY: number, flipX: boolean): any {
         return <div style={{
             ...spriteStyle,
-            top: `${70 - ((positionY + height) * 0.625)}%`,
+            top: `${66 - ((positionY + height) * 0.625)}%`,
             left: `${35 + (positionX * 0.625)}%`,
             width: `${width * 0.625}%`,
             height: `${height * 0.625}%`,
