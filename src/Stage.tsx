@@ -97,11 +97,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         if (messageState) {
             this.stats = messageState.stats ?? {};
             this.health = messageState.health ?? 3;
+            this.masculine = messageState.masculine ?? false;
+            this.characterType = messageState.characterType ?? 0;
         }
     }
 
     buildMessageState(): any {
-        return {stats: this.stats, health: this.health};
+        return {
+            stats: this.stats,
+            health: this.health,
+            masculine: this.masculine,
+            characterType: this.characterType
+        };
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
