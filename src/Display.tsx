@@ -49,12 +49,12 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
 
     let badStats: Stat[] = [];
     let frame = 0;
-    console.log(messageState.stats);
+
     for (let stat of Object.keys(messageState.stats)) {
-            console.log(stat);
-        //if ((StatHighIsBad[stat as Stat] ? (20 - messageState.stats[stat]) : messageState.stats[stat]) < 3) {
+        console.log(stat);
+        if ((StatHighIsBad[stat as Stat] ? (20 - messageState.stats[stat]) : messageState.stats[stat]) < 3) {
             badStats.push(stat as Stat);
-        //}
+        }
     }
     console.log(badStats);
 

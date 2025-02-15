@@ -7,7 +7,11 @@ project_name: "Tamabotchi"
 # A short tagline to show in search.
 tagline: "Convert complex bot interactions into something a child of the nineties can relate to."
 
-creator_notes: "This isn't initializing values based on intros or anything."
+creator_notes: "Someone on the Discord said they thought this would be funny, like, I'm thinking six months ago. 
+I started working on it that weekend, then put it down until I could finish with other things. 
+<br>
+<br>
+This isn't initializing values based on intros or anything."
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
 visibility: 'PRIVATE'
@@ -23,11 +27,11 @@ visibility: 'PRIVATE'
 position: 'ADJACENT'
 
 # Self-explanatory.
-# tags:
-#  - 'Stage'
-#  - 'Admin'
-#  - 'Template'
-#  - 'Base'
+tags:
+ - 'Stage'
+ - 'Admin'
+ - 'Template'
+ - 'Base'
 
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
