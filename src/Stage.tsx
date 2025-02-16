@@ -33,6 +33,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     fallbackMode: boolean;
     char: Character;
     user: User;
+    badStats: Stat[];
 
     // MessageState variables:
     stats: {[key: string]: number} = {};
@@ -51,6 +52,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         this.char = characters[Object.values(characters)[0].anonymizedId];
         this.user = users[Object.values(users)[0].anonymizedId];
+        this.badStats = [];
         
         this.fallbackMode = false;
         this.fallbackPipeline = null;
@@ -74,6 +76,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             console.error(`Error connecting to backend pipeline; will resort to local inference.`);
             this.fallbackMode = true;
         }
+        this.setBadStats();
 
         console.log('Finished loading stage.');
 
@@ -100,6 +103,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             this.masculine = messageState.masculine ?? false;
             this.characterType = messageState.characterType ?? 0;
         }
+
+        this.setBadStats();
     }
 
     buildMessageState(): any {
@@ -109,6 +114,15 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             masculine: this.masculine,
             characterType: this.characterType
         };
+    }
+
+    setBadStats() {
+        this.badStats = [];
+        for (let stat of Object.keys(this.stats)) {
+            if ((StatHighIsBad[stat as Stat] ? (20 - this.stats[stat]) : this.stats[stat]) < 3) {
+                this.badStats.push(stat as Stat);
+            }
+        }
     }
 
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
@@ -123,6 +137,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // Look at content to make changes to stats:
         await this.assessStatChanges(content);
+        this.setBadStats();
 
         let stageDirection = '';
         // Build stage directions
@@ -163,6 +178,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         // Look at content to make changes to stats
         await this.assessStatChanges(content);
+        this.setBadStats();
 
         return {
             stageDirections: null,

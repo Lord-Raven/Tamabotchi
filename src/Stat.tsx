@@ -20,7 +20,7 @@ export enum Stat {
     Adventure = 'Adventure'
 }
 
-export const NEED_HYPOTHESIS = 'Judging by these character details, it seems that {{char}} {}.';
+export const NEED_HYPOTHESIS = 'Judging by these details, it seems that {{char}} {}.';
 
 export const MASCULINE_LABEL = 'is overtly masculine';
 export const ELF_LABEL = 'is an elf who must eat and bathe and stuff';

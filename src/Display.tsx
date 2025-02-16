@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Stat, StatHighIsBad} from "./Stat";
+import {Stat} from "./Stat";
 
 interface DisplayProps {
     messageState: any
@@ -21,7 +21,6 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
     function getPercent(imageSize: number, pixelCount: number): number {
       return  100 / (256 - imageSize) * pixelCount;
     }
-
 
     const spriteStyle = {
         position: 'absolute' as 'absolute',
@@ -47,23 +46,15 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         images.push(buildImage(i * 8, HEIGHT - 8, 8, 8, ((animationFrame % 2) == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
     }
 
-    let badStats: Stat[] = [];
-    let frame = 0;
-
-    for (let stat of Object.keys(messageState.stats)) {
-        console.log(stat);
-        if ((StatHighIsBad[stat as Stat] ? (20 - messageState.stats[stat]) : messageState.stats[stat]) < 3) {
-            badStats.push(stat as Stat);
-        }
-    }
-    console.log(badStats);
-
-    if (badStats.length > 0) {
-        const stat = badStats[animationFrame % badStats.length];
+    if (messageState.badStats.length > 0) {
+        const stat = messageState.badStats[animationFrame % messageState.badStats.length];
         const statIndex = Object.values(Stat).indexOf(stat);
         console.log(`${stat}:${statIndex}`);
         images.push(buildImage(0, 8, 48, 8, Math.floor(statIndex / 8) * 48, 192 + 8 * (statIndex % 8), false));
     }
+
+
+    let frame = 0;
 
     return <div style={{imageRendering: 'pixelated'}}>
         {images}
