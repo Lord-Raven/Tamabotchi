@@ -22,7 +22,7 @@ export enum Stat {
 
 export const NEED_HYPOTHESIS = 'Judging by these details, it seems that {{char}} {}.';
 
-export const MASCULINE_LABEL = 'is overtly masculine';
+export const MASCULINE_LABEL = 'is a man';
 export const ELF_LABEL = 'is an elf who must eat and bathe and stuff';
 export const FURRY_LABEL = 'is an animal or furry character who must eat and bathe and stuff';
 export const VAMPIRE_LABEL = 'is a vampire, orc, or troll who has pronounced fangs or tusks';

@@ -46,7 +46,7 @@ export const Display: React.FC<DisplayProps> = ({messageState}) => {
         images.push(buildImage(i * 8, HEIGHT - 8, 8, 8, ((animationFrame % 2) == 0 && i == messageState.health - 1) ? 16 : 8, 176, false));
     }
 
-    if (messageState.badStats.length > 0) {
+    if (messageState.badStats && messageState.badStats.length > 0) {
         const stat = messageState.badStats[animationFrame % messageState.badStats.length];
         const statIndex = Object.values(Stat).indexOf(stat);
         console.log(`${stat}:${statIndex}`);
