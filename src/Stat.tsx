@@ -35,13 +35,13 @@ export const SpriteMap: {[key: string]: number} = {
 }
 
 export const StatNeeded: {[key: string]: Stat[]} = {
-    MASCULINE_LABEL: [],
-    ELF_LABEL: [Stat.Hunger, Stat.Bladder, Stat.Hygiene],
-    FURRY_LABEL: [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
+    [MASCULINE_LABEL]: [],
+    [ELF_LABEL]: [Stat.Hunger, Stat.Bladder, Stat.Hygiene],
+    [FURRY_LABEL]: [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
     'is a mortal creature who must eat, sleep, etc.': [Stat.Hunger, Stat.Bladder, Stat.Rest, Stat.Hygiene],
     'is a robot or construct who requires power and maintenance': [Stat.Power, Stat.Maintenance],
     'is an undead monster who requires flesh, blood, or brains for sustenance': [Stat.Bloodlust],
-    DEMON_LABEL: [Stat.Souls],
+    [DEMON_LABEL]: [Stat.Souls],
     'is a necromancer, warlock, or witch who might steal souls': [Stat.Souls],
     'is plagued by self-doubt': [Stat.SelfLoathing],
     'craves praise or ego-stroking': [Stat.Praise],
