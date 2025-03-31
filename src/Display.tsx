@@ -7,9 +7,12 @@ interface DisplayProps {
 
 export const Display: React.FC<DisplayProps> = ({messageState}) => {
 
+    const MODE_MAIN = 0;
+    const MODE_STATS = 1;
     const HEIGHT = 42;
     const WIDTH = 48;
     const [animationFrame, setAnimationFrame] = useState<number>(0);
+    const [mode, setMode] = useState<number>(MODE_MAIN);
     useEffect(() => {
         const interval = setInterval(() => {
             setAnimationFrame(animationFrame => (animationFrame + 1) % 1000);

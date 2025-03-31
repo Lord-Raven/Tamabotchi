@@ -1,1 +1,1 @@
-I'm writing a little Tamagotchi-style stage for Chub Venus.
+I'm writing a little Tamagotchi-style stage (extension) for Chub.ai.

@@ -8,10 +8,18 @@ project_name: "Tamabotchi"
 tagline: "Convert complex bot interactions into something a child of the nineties can relate to."
 
 creator_notes: "Someone on the Discord said they thought this would be funny, like, I'm thinking six months ago. 
-I started working on it that weekend, then put it down until I could finish with other things. 
+I started working on it that weekend, then put it down to work on other things. May as well finish it, I guess.
 <br>
 <br>
-This isn't initializing values based on intros or anything."
+When added, the stage will look at the card's details and choose a subset of potential needs that seem relevant. 
+Then, it will analyze every input or response to determine whether they impact any of the needs. 
+The stage can feed different instruction to the bot based on high or low needs. 
+If any of the character's needs hit 0, they can die, and the LLM will be told they are dead. 
+Have fun! 
+<br>
+<br>
+It's far from perfect in any regard. It doesn't initialize need values based on the intro or anything, it might pick \"bad\" needs, or it might fail to detect an appropriate change in the text. 
+A lot of it is inference-based, so it's prone to mistakes."
 
 # 'PUBLIC', 'PRIVATE', or 'UNLISTED'.
 visibility: 'PRIVATE'
@@ -29,9 +37,9 @@ position: 'ADJACENT'
 # Self-explanatory.
 tags:
  - 'Stage'
- - 'Admin'
- - 'Template'
- - 'Base'
+ - 'Add-on'
+ - 'RPG'
+ - 'Game'
 
 # The schema of any user-supplied config.
 # If your stage requires a configuration but has no
