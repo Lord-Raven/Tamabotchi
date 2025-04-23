@@ -97,12 +97,10 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     readMessageState(messageState: any) {
-        if (messageState) {
-            this.stats = messageState.stats ?? {};
-            this.health = messageState.health ?? 3;
-            this.masculine = messageState.masculine ?? false;
-            this.characterType = messageState.characterType ?? 0;
-        }
+        this.stats = messageState?.stats ?? {};
+        this.health = messageState?.health ?? 3;
+        this.masculine = messageState?.masculine ?? false;
+        this.characterType = messageState?.characterType ?? 0;
 
         this.setBadStats();
     }
