@@ -196,7 +196,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         this.stats = {};
 
         const data = {
-            sequence: this.replaceTags(`[CHARACTER DETAILS]\n${this.char.description}\n${this.char.personality}\n${this.char.tavern_personality}\n[/CHARACTER DETAILS]`, {'char': this.char.name, 'user': this.user.name}), 
+            sequence: this.replaceTags(`{{char}} Details:\n${this.char.description}\n${this.char.personality}\n${this.char.tavern_personality}`, {'char': this.char.name, 'user': this.user.name}),
             candidate_labels: Object.keys(StatNeeded), 
             hypothesis_template: this.replaceTags(NEED_HYPOTHESIS, {'char': this.char.name, 'user': this.user.name}), 
             multi_label: true 
@@ -204,7 +204,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
         const result = await this.query(data);
 
-        const MAX_STATS = 6;
+        const MAX_STATS = 8;
         const STAT_THRESHOLD = 0.01;
 
         this.characterType = 1;
@@ -212,7 +212,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         let index = 0;
         let bannedStats: Stat[] = [];
         while (index < result.scores.length && Object.keys(this.stats).length < MAX_STATS) {
-            console.log(`Considering: ${result.scores[index]}`);
+            console.log(`Considering ${result.labels[index]}: ${result.scores[index]}`);
             if (result.scores[index] > STAT_THRESHOLD) {
                 console.log('Met threshold');
                 if (result.scores[index] > 0.5 && result.labels[index] == MASCULINE_LABEL) {
