@@ -97,6 +97,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     readMessageState(messageState: any) {
+        console.log('readMessageState');
+        console.log(messageState);
         this.stats = messageState?.stats ?? {};
         this.health = messageState?.health ?? 3;
         this.masculine = messageState?.masculine ?? false;
@@ -106,6 +108,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     buildMessageState(): any {
+        console.log('buildMessageState');
+        console.log({stats: this.stats, health: this.health, masculine: this.masculine, characterType: this.characterType});
         return {
             stats: this.stats,
             health: this.health,
