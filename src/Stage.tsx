@@ -1,17 +1,16 @@
-import React, {ReactElement, useEffect, useState} from "react";
+import React, {ReactElement} from "react";
 import {StageBase, StageResponse, InitialData, Message, Character, User} from "@chub-ai/stages-ts";
 import {LoadResponse} from "@chub-ai/stages-ts/dist/types/load";
-import {env, pipeline} from '@xenova/transformers';
 import {Client} from "@gradio/client";
 import {Display} from "./Display";
 
 import {
-    ASSESSMENT_HYPOTHESIS, MASCULINE_LABEL,
+    ASSESSMENT_HYPOTHESIS, FEMININE_LABEL, MASCULINE_LABEL,
     NEED_HYPOTHESIS, SpriteMap,
     Stat,
     StatAssessments,
     StatHighIsBad,
-    StatNeeded,
+    StatHypotheses,
     StatOpposites,
     StatPerTurn, StatPrompts
 } from "./Stat";
@@ -28,10 +27,7 @@ type ChatStateType = any;
 export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateType, ConfigType> {
 
     client: any;
-    fallbackPipelinePromise: Promise<any> | null = null;
-    fallbackPipeline: any = null;
-    fallbackMode: boolean;
-    char: Character;
+    characters: {[key: string]: Character};
     user: User;
     badStats: Stat[];
 
@@ -50,13 +46,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             messageState,                           //  @type:  MessageStateType
         } = data;
 
-        this.char = characters[Object.values(characters)[0].anonymizedId];
+        this.characters = characters;
         this.user = users[Object.values(users)[0].anonymizedId];
         this.badStats = [];
-        
-        this.fallbackMode = false;
-        this.fallbackPipeline = null;
-        env.allowRemoteModels = false;
 
         this.readMessageState(messageState);
         
@@ -64,18 +56,8 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
-        try {
-            this.fallbackPipelinePromise = this.getPipeline();
-        } catch (exception: any) {
-            console.error(`Error loading pipeline: ${exception}`);
-        }
+        this.client = await Client.connect("Ravenok/statosphere-backend", {hf_token: import.meta.env.VITE_HF_API_KEY});
 
-        try {
-            this.client = await Client.connect("Ravenok/statosphere-backend", {hf_token: import.meta.env.VITE_HF_API_KEY});
-        } catch (error) {
-            console.error(`Error connecting to backend pipeline; will resort to local inference.`);
-            this.fallbackMode = true;
-        }
         this.setBadStats();
 
         console.log('Finished loading stage.');
@@ -86,10 +68,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
             initState: null,
             chatState: null,
         };
-    }
-
-    async getPipeline() {
-        return pipeline("zero-shot-classification", "Xenova/mobilebert-uncased-mnli");
     }
 
     async setState(state: MessageStateType): Promise<void> {
@@ -130,16 +108,19 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async beforePrompt(userMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
             content,
+            promptForId
         } = userMessage;
 
-        // First, check that some stats exist; if not, analyze which stats are relevant to this character.
-        if (!this.stats || Object.keys(this.stats).length == 0) {
-            await this.chooseRequiredStats();
-        }
-
         // Look at content to make changes to stats:
-        await this.assessStatChanges(content);
-        this.setBadStats();
+        if (promptForId) {
+            const character = this.characters[promptForId];
+            // First, check that some stats exist; if not, analyze which stats are relevant to this character.
+            if (!this.stats || Object.keys(this.stats).length == 0 || this.characterType == 0) {
+                await this.chooseRequiredStats(character);
+            }
+            await this.assessStatChanges(content, character);
+            this.setBadStats();
+        }
 
         let stageDirection = '';
         // Build stage directions
@@ -167,11 +148,13 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     async afterResponse(botMessage: Message): Promise<Partial<StageResponse<ChatStateType, MessageStateType>>> {
         const {
             content,
+            anonymizedId
         } = botMessage;
 
+        const character = this.characters[anonymizedId];
         // First, check that some stats exist; if not, analyze which stats are relevant to this character.
         if (!this.stats || Object.keys(this.stats).length == 0) {
-            await this.chooseRequiredStats();
+            await this.chooseRequiredStats(character);
         }
 
         for (let stat in this.stats) {
@@ -179,7 +162,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         }
 
         // Look at content to make changes to stats
-        await this.assessStatChanges(content);
+        await this.assessStatChanges(content, character);
         this.setBadStats();
 
         return {
@@ -192,9 +175,68 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
         };
     }
 
-    async chooseRequiredStats() {
+    async chooseRequiredStats(character: Character) {
         console.log('Determining appropriate stats for this bot.');
 
+        const response = (await this.generator.textGen({
+            prompt: `{{system_prompt}}\n\nAbout {{char}}: ${character.personality}\n${character.description}\n` +
+                `Hypothesis statements: ` +
+                `${Object.keys(StatHypotheses).map((stat, index) => `${index + 1}. {{char}} ${stat}`).join('\n')}` +
+                `Priority Instruction: Above is a list of formal hypothesis statements about the character, {{char}}, representing various things that could be true or false about this character. ` +
+                `Based on the provided details of {{char}} and your perception of their likely physiology and personality, ` +
+                `choose and list verbatim any true hypotheses from the above statements in order of relevance to this specific character. ` +
+                `Omit hypotheses which are definitively false or which conflict with more relevant items.`,
+            min_tokens: 30,
+            max_tokens: 150,
+            include_history: true,
+            template: '{{messages}}'
+        }))?.result ?? '';
+
+        console.log(response);
+
+        this.stats = {};
+        let genderFound = false;
+        let typeFound = false;
+        this.characterType = 1;
+
+        let foundHypotheses = Object.keys(StatHypotheses).map(hypothesis => ({
+                key: hypothesis,
+                position: response.indexOf(hypothesis)
+            }))
+            .filter(item => item.position >= 0)
+            .sort((a, b) => a.position - b.position)
+            .map(item => item.key);
+
+
+        for (let hypothesis of foundHypotheses) {
+
+            // Female is default; swap to male if masculine occurs first.
+            if (hypothesis == FEMININE_LABEL) {
+                genderFound = true;
+            } else if (hypothesis == MASCULINE_LABEL && !genderFound) {
+                this.masculine = true;
+                genderFound = true;
+            } else if (SpriteMap[hypothesis] && !typeFound) {
+                this.characterType = SpriteMap[hypothesis];
+                typeFound = true;
+            }
+
+            let bannedStats: Stat[] = [];
+
+            StatHypotheses[hypothesis].forEach(stat => {
+                console.log('Found stat in StatNeeded:' + stat);
+                if (!bannedStats.includes(stat) && !this.stats[stat]) {
+                    console.log(`Adding stat: ${stat}.`);
+                    this.stats[stat] = StatHighIsBad[stat] ? 0 : 10;
+                    if (Object.keys(StatOpposites).includes(stat)) {
+                        bannedStats.push(...StatOpposites[stat]);
+                    }
+                }
+            });
+        }
+
+
+/*
         this.stats = {};
 
         const data = {
@@ -234,18 +276,20 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
                 });
             }
             index++;
-        }
+        }*/
         console.log('Finished building stats:');
         console.log(this.stats);
     }
 
-    async assessStatChanges(content: string) {
+    async assessStatChanges(content: string, character: Character) {
         console.log('Determining stat changes for provided content');
 
+        const candidate_labels = Object.values(StatAssessments).filter(label => {console.log(label.stat); return this.stats[label.stat]}).map(label => label.label);
+
         const data = {
-            sequence: this.replaceTags(content, {'char': this.char.name, 'user': this.user.name}), 
-            candidate_labels: Object.values(StatAssessments).filter(label => this.stats[label.stat]).map(label => label.label),
-            hypothesis_template: this.replaceTags(ASSESSMENT_HYPOTHESIS, {'char': this.char.name, 'user': this.user.name}),
+            sequence: this.replaceTags(content, {'char': character.name, 'user': this.user.name}),
+            candidate_labels: candidate_labels,
+            hypothesis_template: this.replaceTags(ASSESSMENT_HYPOTHESIS, {'char': character.name, 'user': this.user.name}),
             multi_label: true
         };
 
@@ -277,26 +321,18 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     async query(data: any) {
-        let result: any = null;
-        if (this.client && !this.fallbackMode) {
+        let result: any = {};
+        if (this.client) {
             try {
                 const response = await this.client.predict("/predict", {data_string: JSON.stringify(data)});
+                console.log(response);
                 result = JSON.parse(`${response.data[0]}`);
             } catch(e) {
                 console.log(e);
             }
+            console.log({sequence: data.sequence, hypothesisTemplate: data.hypothesis_template, labels: result.labels, scores: result.scores});
         }
-        if (!result) {
-            if (!this.fallbackMode) {
-                console.log('Falling back to local zero-shot pipeline.');
-                this.fallbackMode = true;
-            }
-            if (this.fallbackPipeline == null) {
-                this.fallbackPipeline = this.fallbackPipelinePromise ? await this.fallbackPipelinePromise : await this.getPipeline();
-            }
-            result = await this.fallbackPipeline(data.sequence, data.candidate_labels, { hypothesis_template: data.hypothesis_template, multi_label: data.multi_label });
-        }
-        console.log({sequence: data.sequence, hypothesisTemplate: data.hypothesis_template, labels: result.labels, scores: result.scores});
+
         return result;
     }
 

@@ -7,14 +7,14 @@ project_name: "Tamabotchi"
 # A short tagline to show in search.
 tagline: "Convert complex bot interactions into something a child of the nineties can relate to."
 
-creator_notes: "Someone on the Discord said they thought this would be funny, like, I'm thinking six months ago. 
+creator_notes: "Someone on the Discord said they thought this would be funny, like, I'm thinking at least a year ago. 
 I started working on it that weekend, then put it down to work on other things. May as well finish it, I guess.
 <br>
 <br>
 When added, the stage will look at the card's details and choose a subset of potential needs that seem relevant. 
 Then, it will analyze every input or response to determine whether they impact any of the needs. 
 The stage can feed different instruction to the bot based on high or low needs. 
-If any of the character's needs hit 0, they can die, and the LLM will be told they are dead. 
+If any of the character's needs hit 0, they can die, and the LLM will be told they are dead. Forever. 
 Have fun! 
 <br>
 <br>
