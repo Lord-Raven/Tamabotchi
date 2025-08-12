@@ -337,7 +337,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     }
 
     render(): ReactElement {
-        return <div style={{position: 'relative', width: '100vw', height: '100vw' }}>
+        return <div style={{position: 'relative', width: '100vw', height: '100vh' }}>
                 <Display messageState = {this.buildMessageState()}/>
             </div>;
     }
