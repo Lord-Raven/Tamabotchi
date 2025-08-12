@@ -41,9 +41,9 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
     constructor(data: InitialData<InitStateType, ChatStateType, MessageStateType, ConfigType>) {
         super(data);
         const {
-            characters,         // @type:  { [key: string]: Character }
-            users,                  // @type:  { [key: string]: User}
-            messageState,                           //  @type:  MessageStateType
+            characters, 
+            users, 
+            messageState, 
         } = data;
 
         this.characters = characters;
