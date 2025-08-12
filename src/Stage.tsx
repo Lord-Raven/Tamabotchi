@@ -56,7 +56,7 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     async load(): Promise<Partial<LoadResponse<InitStateType, ChatStateType, MessageStateType>>> {
 
-        this.client = await Client.connect("Ravenok/statosphere-backend", {hf_token: import.meta.env.VITE_HF_API_KEY});
+        this.client = await Client.connect("Ravenok/statosphere-backend");
 
         this.setBadStats();
 
