@@ -338,7 +338,6 @@ export class Stage extends StageBase<InitStateType, ChatStateType, MessageStateT
 
     render(): ReactElement {
         return <div style={{position: 'relative', width: '100vw', height: '100vw' }}>
-                <img style={{position: 'absolute', top: '0%', left: '0%', width: '100%', height: '100%', zIndex: '1'}} src={'/tamabotchi.png'} alt="Tamagotchi-style hand-held electronic game"/>
                 <Display messageState = {this.buildMessageState()}/>
             </div>;
     }
